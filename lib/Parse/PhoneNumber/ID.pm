@@ -1,6 +1,6 @@
 package Parse::PhoneNumber::ID;
 BEGIN {
-  $Parse::PhoneNumber::ID::VERSION = '0.02';
+  $Parse::PhoneNumber::ID::VERSION = '0.03';
 }
 # ABSTRACT: Parse Indonesian phone numbers
 
@@ -955,7 +955,7 @@ Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
