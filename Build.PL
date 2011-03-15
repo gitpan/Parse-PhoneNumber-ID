@@ -17,7 +17,7 @@ my %module_build_args = (
     'Steven Haryanto <stevenharyanto@gmail.com>'
   ],
   'dist_name' => 'Parse-PhoneNumber-ID',
-  'dist_version' => '0.03',
+  'dist_version' => '0.04',
   'license' => 'perl',
   'module_name' => 'Parse::PhoneNumber::ID',
   'recommends' => {},
@@ -25,6 +25,7 @@ my %module_build_args = (
   'requires' => {
     'Clone::Any' => '0',
     'Log::Any' => '0',
+    'Test::More' => '0.96',
     'perl' => '5.010000'
   },
   'script_files' => []
