@@ -2,7 +2,7 @@ NAME
     Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 VERSION
-    version 0.04
+    version 0.05
 
 SYNOPSIS
      use Parse::PhoneNumber::ID qw(parse_id_phone extract_id_phones);

@@ -14,11 +14,11 @@ meta-spec:
   version: 1.4
 name: Parse-PhoneNumber-ID
 requires:
-  Clone::Any: 0
+  Data::Clone: 0
   Log::Any: 0
   Test::More: 0.96
   perl: 5.010000
 resources:
   homepage: http://search.cpan.org/dist/Parse-PhoneNumber-ID/
   repository: http://github.com/sharyanto/perl-Parse-PhoneNumber-ID
-version: 0.04
+version: 0.05
