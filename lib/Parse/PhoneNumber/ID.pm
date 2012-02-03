@@ -1,6 +1,6 @@
 package Parse::PhoneNumber::ID;
-BEGIN {
-  $Parse::PhoneNumber::ID::VERSION = '0.05';
+{
+  $Parse::PhoneNumber::ID::VERSION = '0.06';
 }
 # ABSTRACT: Parse Indonesian phone numbers
 
@@ -441,6 +441,7 @@ my %fwa_prefixes = (
     77 => {operator=>'telkom', product=>'flexi'},
 
     80 => {operator=>'esia'},
+    89 => {operator=>'esia'},
     83 => {operator=>'esia'},
     91 => {operator=>'esia'},
     92 => {operator=>'esia'},
@@ -955,7 +956,7 @@ Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 
@@ -1094,7 +1095,7 @@ Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Steven Haryanto.
+This software is copyright (c) 2012 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
