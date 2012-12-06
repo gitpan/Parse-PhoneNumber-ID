@@ -1,8 +1,4 @@
 package Parse::PhoneNumber::ID;
-{
-  $Parse::PhoneNumber::ID::VERSION = '0.06';
-}
-# ABSTRACT: Parse Indonesian phone numbers
 
 use 5.010;
 use strict;
@@ -15,6 +11,8 @@ our @EXPORT_OK = qw(extract_id_phones parse_id_phone
                     list_id_operators list_id_area_codes);
 
 use Data::Clone qw(clone);
+
+our $VERSION = '0.07'; # VERSION
 
 # from: http://id.wikipedia.org/wiki/Daftar_kode_telepon_di_Indonesia
 # last updated: 2011-03-08
@@ -453,23 +451,33 @@ my %fwa_prefixes = (
 our %SPEC;
 
 my $extract_args = {
-    text              => ['str*' => {
-        summary => 'Text containing phone numbers to extract from',
-        arg_pos => 0,
-    }],
-    max_numbers       => 'int',
-    default_area_code => ['str' => {
+    text => {
+        summary     => 'Text containing phone numbers to extract from',
+        schema      => 'str*',
+        req         => 1,
+        pos         => 0,
+    },
+    max_numbers => {
+        schema      => 'int',
+    },
+    default_area_code => {
         summary     => 'When encountering a number without area code, use this',
+        schema      => ['str' => {
+            match   => qr/^0\d{2,3}$/,
+        }],
         description => <<'_',
 
 If you want to extract numbers that doesn't contain area code (e.g. 7123 4567),
 you'll need to provide this.
 
 _
-        match   => qr/^0\d{2,3}$/,
-    }],
-    level             => ['int' => {
+    },
+    level             => {
         summary     => 'How hard should the function extract numbers (1-9)',
+        schema      => ['int' => {
+            default     => 5,
+            between     => [1, 9],
+        }],
         description => <<'_',
 
 The higher the level, the harder this function will try finding phone numbers,
@@ -479,13 +487,11 @@ it might assume, e.g. 1234567890 to be a phone number. Normally leaving level at
 default level is fine.
 
 _
-        default     => 5,
-        ge          => 1,
-        le          => 9,
-    }],
+    },
 };
 
 $SPEC{extract_id_phones} = {
+    v            => 1.1,
     summary      => 'Extract phone number(s) from text',
     description  => <<'_',
 
@@ -837,6 +843,7 @@ sub extract_id_phones {
 my $parse_args = clone($extract_args);
 delete $parse_args->{max_numbers};
 $SPEC{parse_id_phone} = {
+    v            => 1.1,
     summary      => 'Alias for extract_id_phones(..., max_numbers=>1)->[0]',
     args         => $parse_args,
     result_naked => 1,
@@ -930,6 +937,7 @@ sub _add_info {
 }
 
 #$SPEC{list_id_operators} = {
+#    v            => 1.1,
 #    summary      => 'Return list of known phone operators',
 #    result_naked => 1,
 #};
@@ -938,6 +946,7 @@ sub _add_info {
 #}
 
 #$SPEC{list_id_area_codes} = {
+#    v            => 1.1,
 #    summary      => 'Return list of known area codes in Indonesia, '.
 #        'along with area names',
 #    result_naked => 1,
@@ -946,8 +955,10 @@ sub _add_info {
 #}
 
 1;
+# ABSTRACT: Parse Indonesian phone numbers
 
 
+__END__
 =pod
 
 =head1 NAME
@@ -956,7 +967,7 @@ Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
@@ -991,24 +1002,21 @@ To extract more than one numbers in a text:
  say "There are ", scalar(@$phones), "phone number(s) found in text";
  for (@$phones) { say $_->{pretty} }
 
+=head1 SEE ALSO
+
+L<Parse::PhoneNumber>
+
 =head1 DESCRIPTION
 
-This module can extract/parse Indonesian phone numbers. See extract_id_phones()
-for more details.
 
-This module uses L<Log::Any> logging framework, so you can use something like
-L<Log::Any::App> to easily show more logging output during debugging.
-
-This module uses L<Sub::Spec> framework, so you can switch between named
-arguments and positional, run the subroutine from the command line, etc. Refer
-to Sub::Spec documentation for more details.
+This module has L<Rinci> metadata.
 
 =head1 FUNCTIONS
 
+
 None are exported by default, but they are exportable.
 
-=head2 extract_id_phones(%args) -> RESULT
-
+=head2 extract_id_phones(%args) -> any
 
 Extract phone number(s) from text.
 
@@ -1024,13 +1032,9 @@ Indonesian language, but should be quite suitable for any other normal text.
 Non-Indonesian phone numbers (e.g. +65 12 3456 7890) will still be extracted,
 but without any other detailed information other than country code.
 
-Arguments (C<*> denotes required arguments):
+Arguments ('*' denotes required arguments):
 
 =over 4
-
-=item * B<text>* => I<str>
-
-Text containing phone numbers to extract from.
 
 =item * B<default_area_code> => I<str>
 
@@ -1039,7 +1043,7 @@ When encountering a number without area code, use this.
 If you want to extract numbers that doesn't contain area code (e.g. 7123 4567),
 you'll need to provide this.
 
-=item * B<level> => I<int> (default C<5>)
+=item * B<level> => I<int> (default: 5)
 
 How hard should the function extract numbers (1-9).
 
@@ -1051,20 +1055,21 @@ default level is fine.
 
 =item * B<max_numbers> => I<int>
 
-=back
-
-=head2 parse_id_phone(%args) -> RESULT
-
-
-Alias for extract_id_phones(..., max_numbers=>1)->[0].
-
-Arguments (C<*> denotes required arguments):
-
-=over 4
-
 =item * B<text>* => I<str>
 
 Text containing phone numbers to extract from.
+
+=back
+
+Return value:
+
+=head2 parse_id_phone(%args) -> any
+
+Alias for extract_id_phones(..., max_numbers=>1)->[0].
+
+Arguments ('*' denotes required arguments):
+
+=over 4
 
 =item * B<default_area_code> => I<str>
 
@@ -1073,7 +1078,7 @@ When encountering a number without area code, use this.
 If you want to extract numbers that doesn't contain area code (e.g. 7123 4567),
 you'll need to provide this.
 
-=item * B<level> => I<int> (default C<5>)
+=item * B<level> => I<int> (default: 5)
 
 How hard should the function extract numbers (1-9).
 
@@ -1083,11 +1088,13 @@ but the higher the risk of false positives will be. E.g. in text
 it might assume, e.g. 1234567890 to be a phone number. Normally leaving level at
 default level is fine.
 
+=item * B<text>* => I<str>
+
+Text containing phone numbers to extract from.
+
 =back
 
-=head1 SEE ALSO
-
-L<Parse::PhoneNumber>
+Return value:
 
 =head1 AUTHOR
 
@@ -1101,7 +1108,4 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
 

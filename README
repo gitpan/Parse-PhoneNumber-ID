@@ -2,7 +2,7 @@ NAME
     Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 VERSION
-    version 0.06
+    version 0.07
 
 SYNOPSIS
      use Parse::PhoneNumber::ID qw(parse_id_phone extract_id_phones);
@@ -36,21 +36,16 @@ SYNOPSIS
      say "There are ", scalar(@$phones), "phone number(s) found in text";
      for (@$phones) { say $_->{pretty} }
 
+SEE ALSO
+    Parse::PhoneNumber
+
 DESCRIPTION
-    This module can extract/parse Indonesian phone numbers. See
-    extract_id_phones() for more details.
-
-    This module uses Log::Any logging framework, so you can use something
-    like Log::Any::App to easily show more logging output during debugging.
-
-    This module uses Sub::Spec framework, so you can switch between named
-    arguments and positional, run the subroutine from the command line, etc.
-    Refer to Sub::Spec documentation for more details.
+    This module has Rinci metadata.
 
 FUNCTIONS
     None are exported by default, but they are exportable.
 
-  extract_id_phones(%args) -> RESULT
+  extract_id_phones(%args) -> any
     Extract phone number(s) from text.
 
     Extracts phone number(s) from text. Return an array of one or more
@@ -68,11 +63,7 @@ FUNCTIONS
     extracted, but without any other detailed information other than country
     code.
 
-    Arguments ("*" denotes required arguments):
-
-    *   text* => *str*
-
-        Text containing phone numbers to extract from.
+    Arguments ('*' denotes required arguments):
 
     *   default_area_code => *str*
 
@@ -81,7 +72,7 @@ FUNCTIONS
         If you want to extract numbers that doesn't contain area code (e.g.
         7123 4567), you'll need to provide this.
 
-    *   level => *int* (default 5)
+    *   level => *int* (default: 5)
 
         How hard should the function extract numbers (1-9).
 
@@ -93,14 +84,16 @@ FUNCTIONS
 
     *   max_numbers => *int*
 
-  parse_id_phone(%args) -> RESULT
-    Alias for extract_id_phones(..., max_numbers=>1)->[0].
-
-    Arguments ("*" denotes required arguments):
-
     *   text* => *str*
 
         Text containing phone numbers to extract from.
+
+    Return value:
+
+  parse_id_phone(%args) -> any
+    Alias for extract_id_phones(..., max_numbers=>1)->[0].
+
+    Arguments ('*' denotes required arguments):
 
     *   default_area_code => *str*
 
@@ -109,7 +102,7 @@ FUNCTIONS
         If you want to extract numbers that doesn't contain area code (e.g.
         7123 4567), you'll need to provide this.
 
-    *   level => *int* (default 5)
+    *   level => *int* (default: 5)
 
         How hard should the function extract numbers (1-9).
 
@@ -119,8 +112,11 @@ FUNCTIONS
         number, but with level=9 it might assume, e.g. 1234567890 to be a
         phone number. Normally leaving level at default level is fine.
 
-SEE ALSO
-    Parse::PhoneNumber
+    *   text* => *str*
+
+        Text containing phone numbers to extract from.
+
+    Return value:
 
 AUTHOR
     Steven Haryanto <stevenharyanto@gmail.com>
