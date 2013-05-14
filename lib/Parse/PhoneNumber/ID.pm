@@ -1,6 +1,6 @@
 package Parse::PhoneNumber::ID;
 
-use 5.010;
+use 5.010001;
 use strict;
 use warnings;
 use Log::Any '$log';
@@ -10,9 +10,9 @@ our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(extract_id_phones parse_id_phone
                     list_id_operators list_id_area_codes);
 
-use Data::Clone qw(clone);
+use Data::Clone;
 
-our $VERSION = '0.07'; # VERSION
+our $VERSION = '0.08'; # VERSION
 
 # from: http://id.wikipedia.org/wiki/Daftar_kode_telepon_di_Indonesia
 # last updated: 2011-03-08
@@ -366,44 +366,41 @@ my %cell_prefixes = (
     '0811'  => {operator=>'telkomsel', product=>'halo',              is_gsm=>1},
     '0812'  => {operator=>'telkomsel', product=>'halo/simpati',      is_gsm=>1},
     '0813'  => {operator=>'telkomsel', product=>'simpati',           is_gsm=>1},
-    '0821'  => {operator=>'telkomsel', product=>'simpati',           is_gsm=>1},
-    '0852'  => {operator=>'telkomsel', product=>'as',                is_gsm=>1},
-    '0853'  => {operator=>'telkomsel', product=>'as',                is_gsm=>1},
-
     '0814'  => {operator=>'indosat',   product=>'matrix',            is_gsm=>1},
     '0815'  => {operator=>'indosat',   product=>'matrix/mentari',    is_gsm=>1},
     '0816'  => {operator=>'indosat',   product=>'matrix/mentari',    is_gsm=>1},
+    '0817'  => {operator=>'xl',                                      is_gsm=>1},
+    '0818'  => {operator=>'xl',                                      is_gsm=>1},
+    '0819'  => {operator=>'xl',                                      is_gsm=>1},
+    '0821'  => {operator=>'telkomsel', product=>'simpati',           is_gsm=>1},
+    '0822'  => {operator=>'telkomsel', product=>'simpati',           is_gsm=>1},
+    '0823'  => {operator=>'telkomsel', product=>'as',                is_gsm=>1},
+    '0828'  => {operator=>'sampoerna', product=>'ceria',             is_gsm=>1},
+    #'08315' => {operator=>'nts',                                     is_gsm=>1},
+    '0831'  => {operator=>'axis',                                    is_gsm=>1},
+    '0832'  => {operator=>'axis',                                    is_gsm=>1},
+    '0838'  => {operator=>'axis',                                    is_gsm=>1},
+    '0852'  => {operator=>'telkomsel', product=>'as',                is_gsm=>1},
+    '0853'  => {operator=>'telkomsel', product=>'as',                is_gsm=>1}, # fress
     '0855'  => {operator=>'indosat',   product=>'matrix bright',     is_gsm=>1},
     '0856'  => {operator=>'indosat',   product=>'im3',               is_gsm=>1},
     '0857'  => {operator=>'indosat',   product=>'im3',               is_gsm=>1},
     '0858'  => {operator=>'indosat',   product=>'mentari',           is_gsm=>1},
-
-    '0817'  => {operator=>'xl',                                      is_gsm=>1},
-    '0818'  => {operator=>'xl',                                      is_gsm=>1},
-    '0819'  => {operator=>'xl',                                      is_gsm=>1},
     '0859'  => {operator=>'xl',                                      is_gsm=>1},
-    '0877'  => {operator=>'xl',                                      is_gsm=>1},
-    '0878'  => {operator=>'xl',                                      is_gsm=>1},
-    '0879'  => {operator=>'xl',                                      is_gsm=>1},
-
-    '0828'  => {operator=>'sampoerna', product=>'ceria',             is_gsm=>1},
-
-    '0831'  => {operator=>'axis',                                    is_gsm=>1},
-    '0832'  => {operator=>'axis',                                    is_gsm=>1},
-    '0838'  => {operator=>'axis',                                    is_gsm=>1},
-
-    #'08315' => {operator=>'nts',                                     is_gsm=>1},
-
     #'08681' => {operator=>'psn',       product=>'byru',              is_gsm=>0}, # satellite
     '0868'  => {operator=>'psn',       product=>'byru',              is_gsm=>0}, # satellite
-
+    '0877'  => {operator=>'xl',        product=>'axiata',            is_gsm=>1},
+    '0878'  => {operator=>'xl',        product=>'axiata',            is_gsm=>1},
+    '0879'  => {operator=>'xl',        product=>'axiata',            is_gsm=>1},
     '0881'  => {operator=>'smart',                                   is_cdma=>1},
     '0882'  => {operator=>'smart',                                   is_cdma=>1},
+    '0883'  => {operator=>'smart',                                   is_cdma=>1},
+    '0884'  => {operator=>'smart',                                   is_cdma=>1},
+    '0885'  => {operator=>'smart',                                   is_cdma=>1},
+    '0886'  => {operator=>'smart',                                   is_cdma=>1},
     '0887'  => {operator=>'smart',                                   is_cdma=>1},
-
     '0888'  => {operator=>'mobile8',                                 is_cdma=>1},
     '0889'  => {operator=>'mobile8',                                 is_cdma=>1},
-
     '0896'  => {operator=>'three',                                   is_gsm=>1},
     '0897'  => {operator=>'three',                                   is_gsm=>1},
     '0898'  => {operator=>'three',                                   is_gsm=>1},
@@ -423,27 +420,42 @@ my %cell_prefixes = (
 #87-96 Sulawesi
 #97-99 Papua Maluku
 
+# for fwa things are less clear, below is probably incomplete. each city might
+# be different anyway, e.g. 8x (like 87xxxxxx) is used by telkom in jakarta area
+# (east, bekasi, etc) and not esia. things like esia gogo also complicates
+# things.
+
 my %fwa_prefixes = (
     30 => {operator=>'indosat', product=>'starone'},
-    60 => {operator=>'indosat', product=>'starone'},
-    62 => {operator=>'indosat', product=>'starone'},
-
+    32 => {operator=>'telkom', product=>'flexi'},
+    #39 is fixed telcom
     40 => {operator=>'telkom', product=>'flexi'},
     50 => {operator=>'telkom', product=>'flexi'},
-
-    32 => {operator=>'telkom', product=>'flexi'},
+    60 => {operator=>'indosat', product=>'starone'},
+    62 => {operator=>'indosat', product=>'starone'},
     68 => {operator=>'telkom', product=>'flexi'},
     70 => {operator=>'telkom', product=>'flexi'},
     71 => {operator=>'telkom', product=>'flexi'},
     72 => {operator=>'telkom', product=>'flexi'},
     77 => {operator=>'telkom', product=>'flexi'},
-
     80 => {operator=>'esia'},
-    89 => {operator=>'esia'},
+    81 => {operator=>'esia'}, # jkt
+    82 => {operator=>'esia'}, # assumed 8x
     83 => {operator=>'esia'},
+    84 => {operator=>'esia'}, # assumed 8x
+    85 => {operator=>'esia'}, # jkt
+    86 => {operator=>'esia'}, # assumed 8x
+    87 => {operator=>'esia'}, # jkt
+    88 => {operator=>'esia'}, # assumed 8x
+    89 => {operator=>'esia'},
+    90 => {operator=>'esia'}, # assumed 9x
     91 => {operator=>'esia'},
     92 => {operator=>'esia'},
     93 => {operator=>'esia'},
+    94 => {operator=>'esia'}, # assumed 9x
+    95 => {operator=>'esia'}, # assumed 9x
+    96 => {operator=>'esia'}, # assumed 9x
+    97 => {operator=>'esia'}, # assumed 9x
     98 => {operator=>'esia'},
     99 => {operator=>'esia'},
 );
@@ -967,7 +979,7 @@ Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
@@ -1006,106 +1018,35 @@ To extract more than one numbers in a text:
 
 L<Parse::PhoneNumber>
 
-=head1 DESCRIPTION
-
-
-This module has L<Rinci> metadata.
-
-=head1 FUNCTIONS
-
-
-None are exported by default, but they are exportable.
-
-=head2 extract_id_phones(%args) -> any
-
-Extract phone number(s) from text.
-
-Extracts phone number(s) from text. Return an array of one or more parsed phone
-number structure (a hash). Understands the list of known area codes and cellular
-operators, as well as other information. Understands various syntax e.g.
-+62.22.1234567, (022) 123-4567, 022-123-4567 ext 102, and even things like
-7123456/57 (2 adjacent numbers).
-
-Extraction algorithm is particularly targetted at classified ads text in
-Indonesian language, but should be quite suitable for any other normal text.
-
-Non-Indonesian phone numbers (e.g. +65 12 3456 7890) will still be extracted,
-but without any other detailed information other than country code.
-
-Arguments ('*' denotes required arguments):
-
-=over 4
-
-=item * B<default_area_code> => I<str>
-
-When encountering a number without area code, use this.
-
-If you want to extract numbers that doesn't contain area code (e.g. 7123 4567),
-you'll need to provide this.
-
-=item * B<level> => I<int> (default: 5)
-
-How hard should the function extract numbers (1-9).
-
-The higher the level, the harder this function will try finding phone numbers,
-but the higher the risk of false positives will be. E.g. in text
-'123456789012345' with level=5 it will not find a phone number, but with level=9
-it might assume, e.g. 1234567890 to be a phone number. Normally leaving level at
-default level is fine.
-
-=item * B<max_numbers> => I<int>
-
-=item * B<text>* => I<str>
-
-Text containing phone numbers to extract from.
-
-=back
-
-Return value:
-
-=head2 parse_id_phone(%args) -> any
-
-Alias for extract_id_phones(..., max_numbers=>1)->[0].
-
-Arguments ('*' denotes required arguments):
-
-=over 4
-
-=item * B<default_area_code> => I<str>
-
-When encountering a number without area code, use this.
-
-If you want to extract numbers that doesn't contain area code (e.g. 7123 4567),
-you'll need to provide this.
-
-=item * B<level> => I<int> (default: 5)
-
-How hard should the function extract numbers (1-9).
-
-The higher the level, the harder this function will try finding phone numbers,
-but the higher the risk of false positives will be. E.g. in text
-'123456789012345' with level=5 it will not find a phone number, but with level=9
-it might assume, e.g. 1234567890 to be a phone number. Normally leaving level at
-default level is fine.
-
-=item * B<text>* => I<str>
-
-Text containing phone numbers to extract from.
-
-=back
-
-Return value:
-
 =head1 AUTHOR
 
 Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Steven Haryanto.
+This software is copyright (c) 2013 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
+
+=head1 FUNCTIONS
+
+
+=head2 extract_id_phones() -> any
+
+No arguments.
+
+Return value:
+
+Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
+
+=head2 parse_id_phone() -> any
+
+No arguments.
+
+Return value:
+
+Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
 
 =cut
 
