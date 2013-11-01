@@ -12,7 +12,7 @@ our @EXPORT_OK = qw(extract_id_phones parse_id_phone
 
 use Data::Clone;
 
-our $VERSION = '0.08'; # VERSION
+our $VERSION = '0.09'; # VERSION
 
 # from: http://id.wikipedia.org/wiki/Daftar_kode_telepon_di_Indonesia
 # last updated: 2011-03-08
@@ -435,9 +435,24 @@ my %fwa_prefixes = (
     62 => {operator=>'indosat', product=>'starone'},
     68 => {operator=>'telkom', product=>'flexi'},
     70 => {operator=>'telkom', product=>'flexi'},
-    71 => {operator=>'telkom', product=>'flexi'},
-    72 => {operator=>'telkom', product=>'flexi'},
-    77 => {operator=>'telkom', product=>'flexi'},
+    710 => {operator=>'telkom', product=>'flexi'},
+    711 => {operator=>'telkom', product=>'flexi'},
+    712 => {operator=>'telkom', product=>'flexi'},
+    713 => {operator=>'telkom', product=>'flexi'},
+    714 => {operator=>'telkom', product=>'flexi'},
+    715 => {operator=>'telkom', product=>'flexi'},
+    716 => {operator=>'telkom', product=>'flexi'},
+    717 => {}, # land
+    718 => {}, # land
+    719 => {}, # land
+    72 => {}, # land
+    73 => {}, # land
+    74 => {}, # land
+    75 => {}, # land
+    76 => {}, # land
+    77 => {}, # land
+    78 => {}, # land
+    79 => {}, # land
     80 => {operator=>'esia'},
     81 => {operator=>'esia'}, # jkt
     82 => {operator=>'esia'}, # assumed 8x
@@ -969,9 +984,11 @@ sub _add_info {
 1;
 # ABSTRACT: Parse Indonesian phone numbers
 
-
 __END__
+
 =pod
+
+=encoding utf-8
 
 =head1 NAME
 
@@ -979,7 +996,7 @@ Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SYNOPSIS
 
@@ -1014,9 +1031,113 @@ To extract more than one numbers in a text:
  say "There are ", scalar(@$phones), "phone number(s) found in text";
  for (@$phones) { say $_->{pretty} }
 
+=head1 FUNCTIONS
+
+
+=head2 extract_id_phones(%args) -> any
+
+Extract phone number(s) from text.
+
+Extracts phone number(s) from text. Return an array of one or more parsed phone
+number structure (a hash). Understands the list of known area codes and cellular
+operators, as well as other information. Understands various syntax e.g.
++62.22.1234567, (022) 123-4567, 022-123-4567 ext 102, and even things like
+7123456/57 (2 adjacent numbers).
+
+Extraction algorithm is particularly targetted at classified ads text in
+Indonesian language, but should be quite suitable for any other normal text.
+
+Non-Indonesian phone numbers (e.g. +65 12 3456 7890) will still be extracted,
+but without any other detailed information other than country code.
+
+Arguments ('*' denotes required arguments):
+
+=over 4
+
+=item * B<default_area_code> => I<str>
+
+When encountering a number without area code, use this.
+
+If you want to extract numbers that doesn't contain area code (e.g. 7123 4567),
+you'll need to provide this.
+
+=item * B<level> => I<int> (default: 5)
+
+How hard should the function extract numbers (1-9).
+
+The higher the level, the harder this function will try finding phone numbers,
+but the higher the risk of false positives will be. E.g. in text
+'123456789012345' with level=5 it will not find a phone number, but with level=9
+it might assume, e.g. 1234567890 to be a phone number. Normally leaving level at
+default level is fine.
+
+=item * B<max_numbers> => I<int>
+
+=item * B<text>* => I<str>
+
+Text containing phone numbers to extract from.
+
+=back
+
+Return value:
+
+=head2 parse_id_phone(%args) -> any
+
+Alias for extract_id_phones(..., max_numbers=>1)->[0].
+
+Arguments ('*' denotes required arguments):
+
+=over 4
+
+=item * B<default_area_code> => I<str>
+
+When encountering a number without area code, use this.
+
+If you want to extract numbers that doesn't contain area code (e.g. 7123 4567),
+you'll need to provide this.
+
+=item * B<level> => I<int> (default: 5)
+
+How hard should the function extract numbers (1-9).
+
+The higher the level, the harder this function will try finding phone numbers,
+but the higher the risk of false positives will be. E.g. in text
+'123456789012345' with level=5 it will not find a phone number, but with level=9
+it might assume, e.g. 1234567890 to be a phone number. Normally leaving level at
+default level is fine.
+
+=item * B<text>* => I<str>
+
+Text containing phone numbers to extract from.
+
+=back
+
+Return value:
+
+=head1 TODO
+
+Need to update with more prefixes.
+
 =head1 SEE ALSO
 
 L<Parse::PhoneNumber>
+
+=head1 HOMEPAGE
+
+Please visit the project's homepage at L<https://metacpan.org/release/Parse-PhoneNumber-ID>.
+
+=head1 SOURCE
+
+Source repository is at L<https://github.com/sharyanto/perl-Parse-PhoneNumber-ID>.
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website
+http://rt.cpan.org/Public/Dist/Display.html?Name=Parse-PhoneNumber-ID
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
 
 =head1 AUTHOR
 
@@ -1029,24 +1150,4 @@ This software is copyright (c) 2013 by Steven Haryanto.
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=head1 FUNCTIONS
-
-
-=head2 extract_id_phones() -> any
-
-No arguments.
-
-Return value:
-
-Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
-
-=head2 parse_id_phone() -> any
-
-No arguments.
-
-Return value:
-
-Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
-
 =cut
-

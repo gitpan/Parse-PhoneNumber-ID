@@ -2,7 +2,7 @@ NAME
     Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 VERSION
-    version 0.08
+    version 0.09
 
 SYNOPSIS
      use Parse::PhoneNumber::ID qw(parse_id_phone extract_id_phones);
@@ -36,8 +36,100 @@ SYNOPSIS
      say "There are ", scalar(@$phones), "phone number(s) found in text";
      for (@$phones) { say $_->{pretty} }
 
+FUNCTIONS
+  extract_id_phones(%args) -> any
+    Extract phone number(s) from text.
+
+    Extracts phone number(s) from text. Return an array of one or more
+    parsed phone number structure (a hash). Understands the list of known
+    area codes and cellular operators, as well as other information.
+    Understands various syntax e.g. +62.22.1234567, (022) 123-4567,
+    022-123-4567 ext 102, and even things like 7123456/57 (2 adjacent
+    numbers).
+
+    Extraction algorithm is particularly targetted at classified ads text in
+    Indonesian language, but should be quite suitable for any other normal
+    text.
+
+    Non-Indonesian phone numbers (e.g. +65 12 3456 7890) will still be
+    extracted, but without any other detailed information other than country
+    code.
+
+    Arguments ('*' denotes required arguments):
+
+    *   default_area_code => *str*
+
+        When encountering a number without area code, use this.
+
+        If you want to extract numbers that doesn't contain area code (e.g.
+        7123 4567), you'll need to provide this.
+
+    *   level => *int* (default: 5)
+
+        How hard should the function extract numbers (1-9).
+
+        The higher the level, the harder this function will try finding
+        phone numbers, but the higher the risk of false positives will be.
+        E.g. in text '123456789012345' with level=5 it will not find a phone
+        number, but with level=9 it might assume, e.g. 1234567890 to be a
+        phone number. Normally leaving level at default level is fine.
+
+    *   max_numbers => *int*
+
+    *   text* => *str*
+
+        Text containing phone numbers to extract from.
+
+    Return value:
+
+  parse_id_phone(%args) -> any
+    Alias for extract_id_phones(..., max_numbers=>1)->[0].
+
+    Arguments ('*' denotes required arguments):
+
+    *   default_area_code => *str*
+
+        When encountering a number without area code, use this.
+
+        If you want to extract numbers that doesn't contain area code (e.g.
+        7123 4567), you'll need to provide this.
+
+    *   level => *int* (default: 5)
+
+        How hard should the function extract numbers (1-9).
+
+        The higher the level, the harder this function will try finding
+        phone numbers, but the higher the risk of false positives will be.
+        E.g. in text '123456789012345' with level=5 it will not find a phone
+        number, but with level=9 it might assume, e.g. 1234567890 to be a
+        phone number. Normally leaving level at default level is fine.
+
+    *   text* => *str*
+
+        Text containing phone numbers to extract from.
+
+    Return value:
+
+TODO
+    Need to update with more prefixes.
+
 SEE ALSO
     Parse::PhoneNumber
+
+HOMEPAGE
+    Please visit the project's homepage at
+    <https://metacpan.org/release/Parse-PhoneNumber-ID>.
+
+SOURCE
+    Source repository is at
+    <https://github.com/sharyanto/perl-Parse-PhoneNumber-ID>.
+
+BUGS
+    Please report any bugs or feature requests on the bugtracker website
+    http://rt.cpan.org/Public/Dist/Display.html?Name=Parse-PhoneNumber-ID
+
+    When submitting a bug or request, please include a test-file or a patch
+    to an existing test-file that illustrates the bug or desired feature.
 
 AUTHOR
     Steven Haryanto <stevenharyanto@gmail.com>
@@ -47,29 +139,4 @@ COPYRIGHT AND LICENSE
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.
-
-FUNCTIONS
-  extract_id_phones() -> any
-    No arguments.
-
-    Return value:
-
-    Returns an enveloped result (an array). First element (status) is an
-    integer containing HTTP status code (200 means OK, 4xx caller error, 5xx
-    function error). Second element (msg) is a string containing error
-    message, or 'OK' if status is 200. Third element (result) is optional,
-    the actual result. Fourth element (meta) is called result metadata and
-    is optional, a hash that contains extra information.
-
-  parse_id_phone() -> any
-    No arguments.
-
-    Return value:
-
-    Returns an enveloped result (an array). First element (status) is an
-    integer containing HTTP status code (200 means OK, 4xx caller error, 5xx
-    function error). Second element (msg) is a string containing error
-    message, or 'OK' if status is 200. Third element (result) is optional,
-    the actual result. Fourth element (meta) is called result metadata and
-    is optional, a hash that contains extra information.
 
