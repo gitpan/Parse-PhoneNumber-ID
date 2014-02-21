@@ -12,7 +12,7 @@ our @EXPORT_OK = qw(extract_id_phones parse_id_phone
 
 use Data::Clone;
 
-our $VERSION = '0.09'; # VERSION
+our $VERSION = '0.10'; # VERSION
 
 # from: http://id.wikipedia.org/wiki/Daftar_kode_telepon_di_Indonesia
 # last updated: 2011-03-08
@@ -392,15 +392,15 @@ my %cell_prefixes = (
     '0877'  => {operator=>'xl',        product=>'axiata',            is_gsm=>1},
     '0878'  => {operator=>'xl',        product=>'axiata',            is_gsm=>1},
     '0879'  => {operator=>'xl',        product=>'axiata',            is_gsm=>1},
-    '0881'  => {operator=>'smart',                                   is_cdma=>1},
-    '0882'  => {operator=>'smart',                                   is_cdma=>1},
-    '0883'  => {operator=>'smart',                                   is_cdma=>1},
-    '0884'  => {operator=>'smart',                                   is_cdma=>1},
-    '0885'  => {operator=>'smart',                                   is_cdma=>1},
-    '0886'  => {operator=>'smart',                                   is_cdma=>1},
-    '0887'  => {operator=>'smart',                                   is_cdma=>1},
-    '0888'  => {operator=>'mobile8',                                 is_cdma=>1},
-    '0889'  => {operator=>'mobile8',                                 is_cdma=>1},
+    '0881'  => {operator=>'smartfren',                               is_cdma=>1},
+    '0882'  => {operator=>'smartfren',                               is_cdma=>1},
+    '0883'  => {operator=>'smartfren',                               is_cdma=>1},
+    '0884'  => {operator=>'smartfren',                               is_cdma=>1},
+    '0885'  => {operator=>'smartfren',                               is_cdma=>1},
+    '0886'  => {operator=>'smartfren',                               is_cdma=>1},
+    '0887'  => {operator=>'smartfren',                               is_cdma=>1},
+    '0888'  => {operator=>'smartfren',                               is_cdma=>1},
+    '0889'  => {operator=>'smartfren',                               is_cdma=>1},
     '0896'  => {operator=>'three',                                   is_gsm=>1},
     '0897'  => {operator=>'three',                                   is_gsm=>1},
     '0898'  => {operator=>'three',                                   is_gsm=>1},
@@ -858,7 +858,7 @@ sub extract_id_phones {
 
     # remove internal data
     for my $num (@nums) {
-        for (keys %$num) { delete $num->{$_} if /^_/ }
+        #for (keys %$num) { delete $num->{$_} if /^_/ }
         _add_info($num);
     }
 
@@ -988,7 +988,7 @@ __END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -996,7 +996,7 @@ Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 SYNOPSIS
 
@@ -1118,6 +1118,9 @@ Return value:
 
 Need to update with more prefixes.
 
+Data needs to be cleaned up (especially city names to city codes) and moved to
+GudangData project.
+
 =head1 SEE ALSO
 
 L<Parse::PhoneNumber>
@@ -1132,8 +1135,7 @@ Source repository is at L<https://github.com/sharyanto/perl-Parse-PhoneNumber-ID
 
 =head1 BUGS
 
-Please report any bugs or feature requests on the bugtracker website
-http://rt.cpan.org/Public/Dist/Display.html?Name=Parse-PhoneNumber-ID
+Please report any bugs or feature requests on the bugtracker website L<https://rt.cpan.org/Public/Dist/Display.html?Name=Parse-PhoneNumber-ID>
 
 When submitting a bug or request, please include a test-file or a
 patch to an existing test-file that illustrates the bug or desired
@@ -1145,7 +1147,7 @@ Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Steven Haryanto.
+This software is copyright (c) 2014 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
