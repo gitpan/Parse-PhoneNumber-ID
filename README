@@ -2,7 +2,8 @@ NAME
     Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 VERSION
-    version 0.10
+    This document describes version 0.11 of Parse::PhoneNumber::ID (from
+    Perl distribution Parse-PhoneNumber-ID), released on 2014-10-16.
 
 SYNOPSIS
      use Parse::PhoneNumber::ID qw(parse_id_phone extract_id_phones);
@@ -82,6 +83,8 @@ FUNCTIONS
 
     Return value:
 
+     (any)
+
   parse_id_phone(%args) -> any
     Alias for extract_id_phones(..., max_numbers=>1)->[0].
 
@@ -110,6 +113,8 @@ FUNCTIONS
 
     Return value:
 
+     (any)
+
 TODO
     Need to update with more prefixes.
 
@@ -125,7 +130,7 @@ HOMEPAGE
 
 SOURCE
     Source repository is at
-    <https://github.com/sharyanto/perl-Parse-PhoneNumber-ID>.
+    <https://github.com/perlancar/perl-Parse-PhoneNumber-ID>.
 
 BUGS
     Please report any bugs or feature requests on the bugtracker website
@@ -135,10 +140,10 @@ BUGS
     to an existing test-file that illustrates the bug or desired feature.
 
 AUTHOR
-    Steven Haryanto <stevenharyanto@gmail.com>
+    perlancar <perlancar@cpan.org>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2014 by Steven Haryanto.
+    This software is copyright (c) 2014 by perlancar@cpan.org.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.
