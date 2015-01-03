@@ -12,7 +12,8 @@ our @EXPORT_OK = qw(extract_id_phones parse_id_phone
 
 use Data::Clone;
 
-our $VERSION = '0.11'; # VERSION
+our $DATE = '2015-01-03'; # DATE
+our $VERSION = '0.12'; # VERSION
 
 # from: http://id.wikipedia.org/wiki/Daftar_kode_telepon_di_Indonesia
 # last updated: 2011-03-08
@@ -407,24 +408,6 @@ my %cell_prefixes = (
     '0899'  => {operator=>'three',                                   is_gsm=>1},
 );
 
-# TODO: mobile area code, telkomsel (and indosat etc too?)
-#10-14 Jabotabek
-#15-32 Jabar
-#33-38 Jateng
-#39-43 Jatim
-#44-47 BaliNusra
-#48-59 Kalimantan
-#60-68 Sumbagut (Sumatera Bagian Utara)
-#69-74 Sumbagteng (Sumatera Bagian Tengah)
-#75-86 Sumbagsel (Sumatera Bagian Selatan)
-#87-96 Sulawesi
-#97-99 Papua Maluku
-
-# for fwa things are less clear, below is probably incomplete. each city might
-# be different anyway, e.g. 8x (like 87xxxxxx) is used by telkom in jakarta area
-# (east, bekasi, etc) and not esia. things like esia gogo also complicates
-# things.
-
 my %fwa_prefixes = (
     30 => {operator=>'indosat', product=>'starone'},
     32 => {operator=>'telkom', product=>'flexi'},
@@ -476,6 +459,11 @@ my %fwa_prefixes = (
 );
 
 our %SPEC;
+
+$SPEC{':package'} = {
+    v => 1.1,
+    summary => 'Parse Indonesian phone numbers',
+};
 
 my $extract_args = {
     text => {
@@ -996,7 +984,7 @@ Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 =head1 VERSION
 
-This document describes version 0.11 of Parse::PhoneNumber::ID (from Perl distribution Parse-PhoneNumber-ID), released on 2014-10-16.
+This document describes version 0.12 of Parse::PhoneNumber::ID (from Perl distribution Parse-PhoneNumber-ID), released on 2015-01-03.
 
 =head1 SYNOPSIS
 
@@ -1079,10 +1067,7 @@ Text containing phone numbers to extract from.
 
 =back
 
-Return value:
-
- (any)
-
+Return value:  (any)
 
 =head2 parse_id_phone(%args) -> any
 
@@ -1115,17 +1100,7 @@ Text containing phone numbers to extract from.
 
 =back
 
-Return value:
-
- (any)
-
-=head1 TODO
-
-Need to update with more prefixes.
-
-Data needs to be cleaned up (especially city names to city codes) and moved to
-GudangData project.
-
+Return value:  (any)
 =head1 SEE ALSO
 
 L<Parse::PhoneNumber>
@@ -1136,7 +1111,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/Parse-Phon
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-Parse-PhoneNumber-ID>.
+Source repository is at L<https://github.com/sharyanto/perl-Parse-PhoneNumber-ID>.
 
 =head1 BUGS
 
@@ -1152,7 +1127,7 @@ perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by perlancar@cpan.org.
+This software is copyright (c) 2015 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

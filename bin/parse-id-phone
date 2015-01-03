@@ -1,10 +1,10 @@
 #!perl
 
 # Note: This script is a CLI interface to Riap function /Parse/PhoneNumber/ID/parse_id_phone
-# and generated automatically using Dist::Zilla::Plugin::Rinci::ScriptFromFunc version 0.01
+# and generated automatically using Dist::Zilla::Plugin::Rinci::ScriptFromFunc version 0.05
 
-our $DATE = '2014-10-16'; # DATE
-our $VERSION = '0.11'; # VERSION
+our $DATE = '2015-01-03'; # DATE
+our $VERSION = '0.12'; # VERSION
 
 use 5.010001;
 use strict;
@@ -12,7 +12,9 @@ use warnings;
 
 use Perinci::CmdLine::Any -prefer_lite=>1;
 
-Perinci::CmdLine::Any->new(url => "/Parse/PhoneNumber/ID/parse_id_phone")->run;
+Perinci::CmdLine::Any->new(
+    url => "/Parse/PhoneNumber/ID/parse_id_phone",
+)->run;
 
 # ABSTRACT: Alias for extract_id_phones(..., max_numbers=>1)->[0]
 # PODNAME: parse-id-phone
@@ -29,27 +31,127 @@ parse-id-phone - Alias for extract_id_phones(..., max_numbers=>1)->[0]
 
 =head1 VERSION
 
-This document describes version 0.11 of parse-id-phone (from Perl distribution Parse-PhoneNumber-ID), released on 2014-10-16.
+This document describes version 0.12 of parse-id-phone (from Perl distribution Parse-PhoneNumber-ID), released on 2015-01-03.
 
 =head1 SYNOPSIS
 
 Usage:
 
- % parse-id-phone
-
-Examples:
-
- TODO
-
-To see all options:
-
- % parse-id-phone --help
-
-=head1 DESCRIPTION
+ % parse-id-phone [options] <text>
 
 =head1 OPTIONS
 
- TODO
+C<*> marks required options.
+
+=over
+
+=item B<--config-path>=I<s>
+
+Set path to configuration file.
+
+Can be specified multiple times.
+
+=item B<--config-profile>=I<s>
+
+Set configuration profile to use.
+
+=item B<--default-area-code>=I<s>
+
+When encountering a number without area code, use this.
+
+If you want to extract numbers that doesn't contain area code (e.g. 7123 4567),
+you'll need to provide this.
+
+
+=item B<--format>=I<s>
+
+Choose output format, e.g. json, text.
+
+=item B<--help>, B<-h>, B<-?>
+
+Display this help message.
+
+=item B<--json>
+
+Set output format to json.
+
+=item B<--level>=I<i>
+
+How hard should the function extract numbers (1-9).
+
+Default value:
+
+ 5
+
+The higher the level, the harder this function will try finding phone numbers,
+but the higher the risk of false positives will be. E.g. in text
+'123456789012345' with level=5 it will not find a phone number, but with level=9
+it might assume, e.g. 1234567890 to be a phone number. Normally leaving level at
+default level is fine.
+
+
+=item B<--naked-res>
+
+When outputing as JSON, strip result envelope.
+
+By default, when outputing as JSON, the full enveloped result is returned, e.g.:
+
+    [200,"OK",[1,2,3],{"func.extra"=>4}]
+
+The reason is so you can get the status (1st element), status message (2nd
+element) as well as result metadata/extra result (4th element) instead of just
+the result (3rd element). However, sometimes you want just the result, e.g. when
+you want to pipe the result for more post-processing. In this case you can use
+`--naked-res` so you just get:
+
+    [1,2,3]
+
+
+=item B<--no-config>
+
+Do not use any configuration file.
+
+=item B<--text>=I<s>*
+
+Text containing phone numbers to extract from.
+
+=item B<--version>, B<-v>
+
+=back
+
+=head1 FILES
+
+B</etc/parse-id-phone.conf>
+
+B<~/parse-id-phone.conf>
+
+=head1 COMPLETION
+
+This script has shell tab completion capability with support for several shells.
+
+=head2 bash
+
+To activate bash completion for this script, put:
+
+ complete -C parse-id-phone parse-id-phone
+
+in your bash startup (e.g. C<~/.bashrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
+
+It is recommended, however, that you install L<shcompgen> which allows you to activate completion scripts for several kinds of scripts on multiple shells. Some CPAN distributions (those that are built with L<Dist::Zilla::Plugin::GenShellCompletion>) will even automatically enable shell completion for their included scripts (using C<shcompgen>) at installation time, so you can immadiately have tab completion.
+
+=head2 tcsh
+
+To activate tcsh completion for this script, put:
+
+ complete parse-id-phone 'p/*/`parse-id-phone`/'
+
+in your tcsh startup (e.g. C<~/.tcshrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
+
+It is also recommended to install C<shcompgen> (see above).
+
+=head2 other shells
+
+For fish and zsh, install C<shcompgen> as described above.
 
 =head1 HOMEPAGE
 
@@ -57,7 +159,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/Parse-Phon
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-Parse-PhoneNumber-ID>.
+Source repository is at L<https://github.com/sharyanto/perl-Parse-PhoneNumber-ID>.
 
 =head1 BUGS
 
@@ -73,7 +175,7 @@ perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by perlancar@cpan.org.
+This software is copyright (c) 2015 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
