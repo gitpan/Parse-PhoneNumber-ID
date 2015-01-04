@@ -1,19 +1,20 @@
 package Parse::PhoneNumber::ID;
 
+our $DATE = '2015-01-04'; # DATE
+our $VERSION = '0.13'; # VERSION
+
 use 5.010001;
 use strict;
 use warnings;
 use Log::Any '$log';
 
+use Function::Fallback::CoreOrPP qw(clone);
+use Perinci::Sub::Util qw(gen_modified_sub);
+
 require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(extract_id_phones parse_id_phone
                     list_id_operators list_id_area_codes);
-
-use Data::Clone;
-
-our $DATE = '2015-01-03'; # DATE
-our $VERSION = '0.12'; # VERSION
 
 # from: http://id.wikipedia.org/wiki/Daftar_kode_telepon_di_Indonesia
 # last updated: 2011-03-08
@@ -855,19 +856,17 @@ sub extract_id_phones {
     \@nums;
 }
 
-my $parse_args = clone($extract_args);
-delete $parse_args->{max_numbers};
-$SPEC{parse_id_phone} = {
-    v            => 1.1,
-    summary      => 'Alias for extract_id_phones(..., max_numbers=>1)->[0]',
-    args         => $parse_args,
-    result_naked => 1,
-};
-sub parse_id_phone {
-    my %args = @_;
-    my $res = extract_id_phones(%args, max_numbers=>1);
-    $res->[0];
-}
+gen_modified_sub(
+    output_name => 'parse_id_phone',
+    base_name   => 'extract_id_phones',
+    summary     => 'Alias for extract_id_phones(..., max_numbers=>1)->[0]',
+    remove_args => [qw/max_numbers/],
+    output_code => sub {
+        my %args = @_;
+        my $res = extract_id_phones(%args, max_numbers=>1);
+        $res->[0];
+    },
+);
 
 sub _normalize {
     my ($cc, $area, $local, $ext) = @_;
@@ -984,7 +983,7 @@ Parse::PhoneNumber::ID - Parse Indonesian phone numbers
 
 =head1 VERSION
 
-This document describes version 0.12 of Parse::PhoneNumber::ID (from Perl distribution Parse-PhoneNumber-ID), released on 2015-01-03.
+This document describes version 0.13 of Parse::PhoneNumber::ID (from Perl distribution Parse-PhoneNumber-ID), released on 2015-01-04.
 
 =head1 SYNOPSIS
 
@@ -1072,6 +1071,18 @@ Return value:  (any)
 =head2 parse_id_phone(%args) -> any
 
 Alias for extract_id_phones(..., max_numbers=>1)->[0].
+
+Extracts phone number(s) from text. Return an array of one or more parsed phone
+number structure (a hash). Understands the list of known area codes and cellular
+operators, as well as other information. Understands various syntax e.g.
++62.22.1234567, (022) 123-4567, 022-123-4567 ext 102, and even things like
+7123456/57 (2 adjacent numbers).
+
+Extraction algorithm is particularly targetted at classified ads text in
+Indonesian language, but should be quite suitable for any other normal text.
+
+Non-Indonesian phone numbers (e.g. +65 12 3456 7890) will still be extracted,
+but without any other detailed information other than country code.
 
 Arguments ('*' denotes required arguments):
 

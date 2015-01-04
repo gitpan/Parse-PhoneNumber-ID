@@ -12,5 +12,6 @@
   #75-86 Sumbagsel (Sumatera Bagian Selatan)
   #87-96 Sulawesi
   #97-99 Papua Maluku
+
 * TODO [2015-01-03 Sat] phoneid: cleanup data (especially city names -> city code)
 * TODO [2015-01-03 Sat] phoneid: move data to gudangdata project after cleanup

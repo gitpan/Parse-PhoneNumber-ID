@@ -3,8 +3,8 @@
 # Note: This script is a CLI interface to Riap function /Parse/PhoneNumber/ID/parse_id_phone
 # and generated automatically using Dist::Zilla::Plugin::Rinci::ScriptFromFunc version 0.05
 
-our $DATE = '2015-01-03'; # DATE
-our $VERSION = '0.12'; # VERSION
+our $DATE = '2015-01-04'; # DATE
+our $VERSION = '0.13'; # VERSION
 
 use 5.010001;
 use strict;
@@ -31,13 +31,27 @@ parse-id-phone - Alias for extract_id_phones(..., max_numbers=>1)->[0]
 
 =head1 VERSION
 
-This document describes version 0.12 of parse-id-phone (from Perl distribution Parse-PhoneNumber-ID), released on 2015-01-03.
+This document describes version 0.13 of parse-id-phone (from Perl distribution Parse-PhoneNumber-ID), released on 2015-01-04.
 
 =head1 SYNOPSIS
 
 Usage:
 
  % parse-id-phone [options] <text>
+
+=head1 DESCRIPTION
+
+Extracts phone number(s) from text. Return an array of one or more parsed phone
+number structure (a hash). Understands the list of known area codes and cellular
+operators, as well as other information. Understands various syntax e.g.
++62.22.1234567, (022) 123-4567, 022-123-4567 ext 102, and even things like
+7123456/57 (2 adjacent numbers).
+
+Extraction algorithm is particularly targetted at classified ads text in
+Indonesian language, but should be quite suitable for any other normal text.
+
+Non-Indonesian phone numbers (e.g. +65 12 3456 7890) will still be extracted,
+but without any other detailed information other than country code.
 
 =head1 OPTIONS
 

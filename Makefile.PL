@@ -24,9 +24,10 @@ my %WriteMakefileArgs = (
   "MIN_PERL_VERSION" => "5.010001",
   "NAME" => "Parse::PhoneNumber::ID",
   "PREREQ_PM" => {
-    "Data::Clone" => 0,
+    "Function::Fallback::CoreOrPP" => 0,
     "Log::Any" => 0,
     "Perinci::CmdLine::Any" => "0.06",
+    "Perinci::Sub::Util" => 0,
     "Rinci" => "1.1.0"
   },
   "TEST_REQUIRES" => {
@@ -35,7 +36,7 @@ my %WriteMakefileArgs = (
     "IPC::Open3" => 0,
     "Test::More" => "0.98"
   },
-  "VERSION" => "0.12",
+  "VERSION" => "0.13",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -43,13 +44,14 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
-  "Data::Clone" => 0,
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,
+  "Function::Fallback::CoreOrPP" => 0,
   "IO::Handle" => 0,
   "IPC::Open3" => 0,
   "Log::Any" => 0,
   "Perinci::CmdLine::Any" => "0.06",
+  "Perinci::Sub::Util" => 0,
   "Perl::osnames" => "0.09",
   "Rinci" => "1.1.0",
   "Test::More" => "0.98"

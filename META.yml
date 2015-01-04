@@ -18,16 +18,17 @@ meta-spec:
   version: '1.4'
 name: Parse-PhoneNumber-ID
 requires:
-  Data::Clone: '0'
+  Function::Fallback::CoreOrPP: '0'
   Log::Any: '0'
   Perinci::CmdLine::Any: '0.06'
+  Perinci::Sub::Util: '0'
   Rinci: v1.1.0
   perl: '5.010001'
 resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Parse-PhoneNumber-ID
   homepage: https://metacpan.org/release/Parse-PhoneNumber-ID
   repository: git://github.com/sharyanto/perl-Parse-PhoneNumber-ID.git
-version: '0.12'
+version: '0.13'
 x_Dist_Zilla:
   perl:
     version: '5.018002'
@@ -286,7 +287,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::PERLANCAR::GenTodoMd
       name: '@Author::PERLANCAR/PERLANCAR::GenTodoMd'
-      version: '0.01'
+      version: '0.03'
     -
       class: Dist::Zilla::Plugin::Prereqs
       config:
